@@ -1,0 +1,3060 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creative Portal · @ilovepauldomar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --night:     #0d1117;
+      --deep:      #161b22;
+      --surface:   #21262d;
+      --border:    #30363d;
+      --muted:     #484f58;
+      --subtle:    #6e7681;
+      --body:      #c9d1d9;
+      --bright:    #e6edf3;
+      --gold:      #d4a843;
+      --gold-dim:  #a07830;
+      --coral:     #c04a2a;
+      --ocean:     #1a6b8a;
+      --foam:      #2d8fa8;
+      --green:     #3fb950;
+      --orange:    #d29922;
+      --purple:    #8957e5;
+      --accent:    #d4a843;
+    }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--night);
+      color: var(--body);
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ══════════════════════════════════════
+       LOGIN
+    ══════════════════════════════════════ */
+    .login-wrap {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--night);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 80%, rgba(212,168,67,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 80% 20%, rgba(26,107,138,0.10) 0%, transparent 60%);
+    }
+
+    .login-card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 400px;
+      padding: 48px 40px;
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      animation: fadeUp 0.5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .login-wave {
+      font-size: 40px;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .login-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--bright);
+      display: block;
+    }
+
+    .login-sub {
+      font-size: 12px;
+      color: var(--subtle);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .login-field {
+      margin-bottom: 16px;
+    }
+
+    .login-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--subtle);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--bright);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .login-input:focus { border-color: var(--gold); }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 8px;
+      background: var(--gold);
+      color: var(--night);
+      border: none;
+      border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .login-btn:hover { background: #e8bb55; }
+    .login-btn:active { transform: scale(0.98); }
+
+    .login-error {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: rgba(192,74,42,0.15);
+      border: 1px solid rgba(192,74,42,0.3);
+      border-radius: 8px;
+      font-size: 13px;
+      color: #ff8070;
+      text-align: center;
+    }
+
+    /* ══════════════════════════════════════
+       PORTAL LAYOUT
+    ══════════════════════════════════════ */
+    .portal {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      height: 56px;
+      background: var(--deep);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .topbar-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--bright);
+    }
+
+    .topbar-tag {
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .topbar-spacer { flex: 1; }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tab-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.15s;
+      color: var(--subtle);
+      background: transparent;
+    }
+
+    .tab-btn:hover { color: var(--body); background: var(--surface); }
+    .tab-btn.active { color: var(--gold); background: rgba(212,168,67,0.1); border-color: rgba(212,168,67,0.25); }
+
+    .logout-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.15s;
+      color: var(--subtle);
+      background: transparent;
+    }
+
+    .logout-btn:hover { color: var(--coral); border-color: var(--coral); }
+
+    /* ── MAIN BODY ── */
+    .portal-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ══════════════════════════════════════
+       CHAT PANEL
+    ══════════════════════════════════════ */
+    .chat-panel {
+      width: 380px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      background: var(--deep);
+    }
+
+    .chat-header {
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .chat-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--bright);
+    }
+
+    .chat-subtitle {
+      font-size: 11px;
+      color: var(--subtle);
+      margin-top: 2px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .msg {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      animation: fadeUp 0.25s ease both;
+    }
+
+    .msg-user { align-items: flex-end; }
+    .msg-agent { align-items: flex-start; }
+
+    .msg-bubble {
+      max-width: 88%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .msg-user .msg-bubble {
+      background: rgba(212,168,67,0.15);
+      border: 1px solid rgba(212,168,67,0.25);
+      color: var(--bright);
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg-agent .msg-bubble {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--body);
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg-bubble.saved {
+      border-color: rgba(63,185,80,0.3);
+      background: rgba(63,185,80,0.08);
+    }
+
+    .msg-time {
+      font-size: 10px;
+      color: var(--muted);
+      padding: 0 4px;
+    }
+
+    .msg-typing {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 12px 14px;
+    }
+
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: typingBounce 1.2s ease infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    .chat-welcome {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--subtle);
+    }
+
+    .chat-welcome-icon { font-size: 36px; margin-bottom: 12px; }
+    .chat-welcome-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      color: var(--body);
+      margin-bottom: 8px;
+    }
+    .chat-welcome-text { font-size: 12px; line-height: 1.7; }
+
+    .chat-suggestions {
+      padding: 0 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .suggestion-btn {
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--body);
+      font-size: 12px;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+    }
+
+    .suggestion-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+    .chat-input-area {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .chat-textarea {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: var(--bright);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      resize: none;
+      outline: none;
+      min-height: 42px;
+      max-height: 120px;
+      line-height: 1.5;
+      transition: border-color 0.2s;
+    }
+
+    .chat-textarea:focus { border-color: var(--gold-dim); }
+    .chat-textarea::placeholder { color: var(--muted); }
+
+    .chat-send {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--gold);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .chat-send:hover { background: #e8bb55; }
+    .chat-send:active { transform: scale(0.94); }
+    .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ══════════════════════════════════════
+       LIBRARY PANEL
+    ══════════════════════════════════════ */
+    .library-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--night);
+    }
+
+    .library-toolbar {
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: var(--deep);
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+      max-width: 340px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 12px 8px 34px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--bright);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus { border-color: var(--gold-dim); }
+    .search-input::placeholder { color: var(--muted); }
+
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.15s;
+      color: var(--subtle);
+      background: transparent;
+    }
+
+    .pill:hover { color: var(--body); border-color: var(--muted); }
+    .pill.active { color: var(--gold); background: rgba(212,168,67,0.1); border-color: rgba(212,168,67,0.35); }
+
+    .count-tag {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--subtle);
+      white-space: nowrap;
+    }
+
+    .refresh-btn {
+      padding: 7px 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--subtle);
+      font-size: 12px;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .refresh-btn:hover { color: var(--gold); border-color: var(--gold-dim); }
+
+    /* CANAL FILTER ROW */
+    .canal-row {
+      padding: 10px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 6px;
+      background: var(--deep);
+    }
+
+    /* GRID */
+    .library-grid {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+      align-content: start;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    /* CARD */
+    .idea-card {
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      animation: fadeUp 0.3s ease both;
+      cursor: pointer;
+    }
+
+    .idea-card:hover {
+      border-color: var(--gold-dim);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .card-stripe {
+      height: 6px;
+      display: flex;
+    }
+
+    .card-stripe-seg { flex: 1; }
+
+    .card-inner {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-date {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .card-badges {
+      display: flex;
+      gap: 5px;
+    }
+
+    .badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .badge-canal-instagram { background: rgba(212,168,67,0.15); color: #d4a843; }
+    .badge-canal-site      { background: rgba(26,107,138,0.15); color: #2d8fa8; }
+    .badge-canal-signage   { background: rgba(141,87,229,0.15); color: #a67ff0; }
+    .badge-canal-merchandising { background: rgba(192,74,42,0.15); color: #e07050; }
+    .badge-canal-default   { background: rgba(110,118,129,0.15); color: #8b949e; }
+
+    .badge-status-nova      { background: rgba(63,185,80,0.12); color: #3fb950; }
+    .badge-status-producao  { background: rgba(210,153,34,0.12); color: #d29922; }
+    .badge-status-aprovada  { background: rgba(45,143,168,0.12); color: #2d8fa8; }
+    .badge-status-arquivo   { background: rgba(110,118,129,0.12); color: #8b949e; }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--bright);
+      line-height: 1.35;
+    }
+
+    .card-conceito {
+      font-size: 12px;
+      color: var(--subtle);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-narracao {
+      font-size: 12px;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      border-left: 2px solid var(--gold-dim);
+      padding-left: 10px;
+    }
+
+    .card-footer {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .palette-row {
+      display: flex;
+      gap: 5px;
+    }
+
+    .palette-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      transition: transform 0.15s;
+      cursor: help;
+    }
+
+    .palette-dot:hover { transform: scale(1.4); }
+
+    .card-action-row {
+      display: flex;
+      gap: 5px;
+    }
+
+    .card-btn {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--subtle);
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.13s;
+    }
+
+    .card-btn:hover { color: var(--gold); border-color: var(--gold-dim); }
+    .card-btn.primary { background: rgba(212,168,67,0.1); border-color: rgba(212,168,67,0.3); color: var(--gold); }
+
+    /* ══════════════════════════════════════
+       MODAL
+    ══════════════════════════════════════ */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal {
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      max-width: 660px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+      animation: slideUp 0.25s ease;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-stripe { height: 8px; display: flex; border-radius: 20px 20px 0 0; overflow: hidden; }
+
+    .modal-content { padding: 28px 32px 32px; }
+
+    .modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--bright);
+      line-height: 1.25;
+    }
+
+    .modal-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--subtle);
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+
+    .modal-close:hover { background: var(--surface); color: var(--bright); }
+
+    .modal-section { margin-bottom: 20px; }
+
+    .modal-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .modal-text {
+      font-size: 13px;
+      color: var(--body);
+      line-height: 1.75;
+    }
+
+    .modal-quote {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--body);
+      line-height: 1.8;
+      background: var(--surface);
+      padding: 16px 20px;
+      border-radius: 10px;
+      border-left: 3px solid var(--gold);
+    }
+
+    .modal-colors {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .color-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .color-dot-lg {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .color-hex {
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+      color: var(--body);
+    }
+
+    .status-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .status-opt {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--subtle);
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .status-opt:hover { color: var(--body); border-color: var(--muted); }
+    .status-opt.active { background: rgba(212,168,67,0.12); border-color: rgba(212,168,67,0.4); color: var(--gold); }
+
+    /* ══════════════════════════════════════
+       STATES
+    ══════════════════════════════════════ */
+    .state-box {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 40px;
+      color: var(--subtle);
+    }
+
+    .state-icon { font-size: 40px; margin-bottom: 14px; }
+    .state-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--body); margin-bottom: 8px; }
+    .state-sub { font-size: 13px; line-height: 1.6; max-width: 340px; margin: 0 auto; }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ══════════════════════════════════════
+       SOCIAL PANEL
+    ══════════════════════════════════════ */
+    .social-panel {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      background: var(--night);
+    }
+
+    /* LEFT — GENERATOR */
+    .social-gen {
+      width: 400px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      background: var(--deep);
+    }
+
+    .social-gen-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .social-gen-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--bright);
+    }
+
+    .social-gen-sub {
+      font-size: 11px;
+      color: var(--subtle);
+      margin-top: 2px;
+    }
+
+    .social-gen-form {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--subtle);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+
+    .form-select {
+      padding: 9px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--bright);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236e7681' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+
+    .form-select:focus { border-color: var(--gold-dim); }
+
+    .form-textarea {
+      padding: 10px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--bright);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      outline: none;
+      resize: none;
+      line-height: 1.6;
+      transition: border-color 0.2s;
+      min-height: 90px;
+    }
+
+    .form-textarea:focus { border-color: var(--gold-dim); }
+    .form-textarea::placeholder { color: var(--muted); }
+
+    .toggle-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .toggle-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--subtle);
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .toggle-btn:hover { color: var(--body); border-color: var(--muted); }
+    .toggle-btn.active { background: rgba(212,168,67,0.12); border-color: rgba(212,168,67,0.4); color: var(--gold); }
+
+    .btn-generate {
+      width: 100%;
+      padding: 13px;
+      background: var(--gold);
+      color: var(--night);
+      border: none;
+      border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-generate:hover { background: #e8bb55; }
+    .btn-generate:active { transform: scale(0.98); }
+    .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* RIGHT — OUTPUT */
+    .social-output {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--night);
+    }
+
+    .social-output-header {
+      padding: 18px 24px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--deep);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .social-output-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--bright);
+    }
+
+    .social-output-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    /* RESULT CARD */
+    .result-card {
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      animation: fadeUp 0.3s ease both;
+    }
+
+    .result-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .result-network-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-instagram { background: rgba(225,48,108,0.15); color: #e1306c; }
+    .badge-facebook  { background: rgba(24,119,242,0.15); color: #1877f2; }
+
+    .result-type {
+      font-size: 11px;
+      color: var(--subtle);
+      background: var(--surface);
+      padding: 3px 10px;
+      border-radius: 10px;
+    }
+
+    .result-hora {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .result-section {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-section:last-child { border-bottom: none; }
+
+    .result-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .result-text {
+      font-size: 13px;
+      color: var(--body);
+      line-height: 1.75;
+      white-space: pre-wrap;
+    }
+
+    .hashtag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .hashtag-chip {
+      padding: 4px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 11px;
+      color: var(--foam);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .hashtag-chip:hover {
+      background: rgba(45,143,168,0.15);
+      border-color: var(--foam);
+    }
+
+    .cta-box {
+      background: rgba(212,168,67,0.08);
+      border: 1px solid rgba(212,168,67,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .notas-box {
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--subtle);
+      line-height: 1.7;
+    }
+
+    .copy-btn {
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--subtle);
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.13s;
+    }
+
+    .copy-btn:hover { color: var(--green); border-color: var(--green); }
+    .copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+    .result-actions {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .btn-save-social {
+      padding: 8px 18px;
+      background: var(--gold);
+      color: var(--night);
+      border: none;
+      border-radius: 8px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-save-social:hover { background: #e8bb55; }
+
+    .social-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      color: var(--subtle);
+      padding: 40px;
+    }
+
+    .social-empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+    .social-empty-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--body); margin-bottom: 8px; }
+    .social-empty-sub { font-size: 13px; line-height: 1.6; max-width: 300px; }
+
+    .msg-system { align-items: center; }
+    .msg-system .msg-bubble {
+      background: rgba(63,185,80,0.1);
+      border: 1px solid rgba(63,185,80,0.25);
+      color: #3fb950;
+      font-size: 12px;
+      text-align: center;
+      max-width: 100%;
+    }
+
+    /* ── SOCIAL TABS ── */
+    .social-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--deep);
+      padding: 0 24px;
+    }
+
+    .social-tab {
+      padding: 12px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--subtle);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.15s;
+      margin-bottom: -1px;
+    }
+
+    .social-tab:hover { color: var(--body); }
+    .social-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    /* ── SOCIAL BIBLIOTECA ── */
+    .social-biblioteca {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--night);
+    }
+
+    .soc-toolbar {
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--deep);
+      flex-wrap: wrap;
+    }
+
+    .soc-grid {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      align-content: start;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .soc-card {
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s, transform 0.2s;
+      animation: fadeUp 0.3s ease both;
+    }
+
+    .soc-card:hover {
+      border-color: var(--gold-dim);
+      transform: translateY(-2px);
+    }
+
+    .soc-card-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .soc-card-body {
+      padding: 14px 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .soc-legenda {
+      font-size: 12px;
+      color: var(--body);
+      line-height: 1.65;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .soc-hashtags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .soc-tag {
+      font-size: 10px;
+      padding: 2px 8px;
+      background: rgba(45,143,168,0.1);
+      border: 1px solid rgba(45,143,168,0.2);
+      border-radius: 10px;
+      color: var(--foam);
+    }
+
+    .soc-card-footer {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .soc-modal-legenda {
+      font-size: 14px;
+      color: var(--body);
+      line-height: 1.8;
+      white-space: pre-wrap;
+      background: var(--surface);
+      padding: 16px;
+      border-radius: 10px;
+    }
+
+    /* ══════════════════════════════════════
+       DAM PANEL
+    ══════════════════════════════════════ */
+    .dam-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--night);
+    }
+
+    .dam-toolbar {
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--deep);
+      flex-wrap: wrap;
+    }
+
+    .dam-grid {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      align-content: start;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .dam-card {
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      animation: fadeUp 0.3s ease both;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dam-card:hover {
+      border-color: var(--gold-dim);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .dam-thumb {
+      width: 100%;
+      aspect-ratio: 16/10;
+      object-fit: cover;
+      background: var(--surface);
+      display: block;
+    }
+
+    .dam-thumb-placeholder {
+      width: 100%;
+      aspect-ratio: 16/10;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: var(--muted);
+    }
+
+    .dam-card-info {
+      padding: 10px 12px;
+      flex: 1;
+    }
+
+    .dam-card-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--bright);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 4px;
+    }
+
+    .dam-card-meta {
+      font-size: 10px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dam-ai-badge {
+      font-size: 9px;
+      padding: 1px 6px;
+      border-radius: 8px;
+      background: rgba(212,168,67,0.12);
+      color: var(--gold);
+      border: 1px solid rgba(212,168,67,0.2);
+    }
+
+    .dam-tags {
+      padding: 0 12px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .dam-tag {
+      font-size: 9px;
+      padding: 2px 6px;
+      background: var(--surface);
+      border-radius: 8px;
+      color: var(--subtle);
+    }
+
+    /* DAM DETAIL MODAL */
+    .dam-modal { max-width: 860px; }
+
+    .dam-modal-img {
+      width: 100%;
+      max-height: 360px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .dam-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .dam-meta-item {
+      background: var(--surface);
+      padding: 12px 14px;
+      border-radius: 10px;
+    }
+
+    .dam-meta-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .dam-meta-value {
+      font-size: 13px;
+      color: var(--bright);
+    }
+
+    .dam-sentiment {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .sentiment-nostalgia    { background: rgba(212,168,67,0.12);  color: var(--gold); }
+    .sentiment-resilience   { background: rgba(63,185,80,0.12);   color: #3fb950; }
+    .sentiment-calm         { background: rgba(45,143,168,0.12);  color: var(--foam); }
+    .sentiment-joy          { background: rgba(255,193,7,0.12);   color: #ffc107; }
+    .sentiment-melancholy   { background: rgba(141,87,229,0.12);  color: #a67ff0; }
+
+    .dam-social-copy {
+      font-size: 13px;
+      font-style: italic;
+      color: var(--body);
+      line-height: 1.75;
+      background: var(--surface);
+      padding: 16px;
+      border-radius: 10px;
+      border-left: 3px solid var(--gold);
+      white-space: pre-wrap;
+    }
+
+    .dam-btn-analyse {
+      padding: 8px 18px;
+      background: transparent;
+      border: 1px solid var(--gold-dim);
+      color: var(--gold);
+      border-radius: 8px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .dam-btn-analyse:hover { background: rgba(212,168,67,0.1); }
+    .dam-btn-analyse:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .dam-scan-btn {
+      padding: 8px 16px;
+      background: var(--gold);
+      color: var(--night);
+      border: none;
+      border-radius: 8px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dam-scan-btn:hover { background: #e8bb55; }
+    .dam-scan-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+    // ── CONFIG ────────────────────────────────────────────────────
+    const WEBHOOK_CHAT    = "https://n8n.ilovepauldomar.pt/webhook/assistente-criativo";
+    const WEBHOOK_LIBRARY = "https://n8n.ilovepauldomar.pt/webhook/e4b9ad59-e50a-474f-baa5-a3124e15a058";
+
+    const USERS = [
+      { username: "admin",  password: "pauldomar2024" },
+      { username: "equipa", password: "criativo2024"  },
+    ];
+
+    const SESSION_KEY = "cp_ilovepauldomar_auth";
+
+    // ── UTILS ─────────────────────────────────────────────────────
+    function genSessionId() {
+      return 'sess_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    }
+
+    function parseCores(item) {
+      const raw = item.cores || item["cores"] || "";
+      if (!raw) return ["#1a6b8a", "#d4a843", "#c04a2a"];
+      const matches = String(raw).match(/#[A-Fa-f0-9]{6}|#[A-Fa-f0-9]{3}/g);
+      return (matches && matches.length > 0) ? matches : ["#1a6b8a", "#d4a843", "#c04a2a"];
+    }
+
+    function getCanalClass(canal) {
+      if (!canal) return "badge-canal-default";
+      const c = canal.toLowerCase();
+      if (c.includes("instagram")) return "badge-canal-instagram";
+      if (c.includes("site"))      return "badge-canal-site";
+      if (c.includes("signage"))   return "badge-canal-signage";
+      if (c.includes("merch"))     return "badge-canal-merchandising";
+      return "badge-canal-default";
+    }
+
+    function getStatusClass(s) {
+      if (!s) return "badge-status-nova";
+      const v = s.toLowerCase();
+      if (v.includes("nova"))      return "badge-status-nova";
+      if (v.includes("prod"))      return "badge-status-producao";
+      if (v.includes("aprov"))     return "badge-status-aprovada";
+      if (v.includes("arq"))       return "badge-status-arquivo";
+      return "badge-status-nova";
+    }
+
+    function formatTime(d = new Date()) {
+      return d.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function formatDate(raw) {
+      if (!raw) return "—";
+      const d = new Date(raw);
+      if (isNaN(d)) return raw;
+      return d.toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    // ── LOGIN ─────────────────────────────────────────────────────
+    function Login({ onLogin }) {
+      const [user, setUser]   = useState("");
+      const [pass, setPass]   = useState("");
+      const [error, setError] = useState("");
+
+      function handleSubmit(e) {
+        e.preventDefault();
+        const found = USERS.find(u => u.username === user.trim() && u.password === pass);
+        if (found) {
+          sessionStorage.setItem(SESSION_KEY, JSON.stringify({ username: found.username }));
+          onLogin(found.username);
+        } else {
+          setError("Credenciais inválidas. Tenta novamente.");
+        }
+      }
+
+      return (
+        <div className="login-wrap">
+          <div className="login-bg" />
+          <div className="login-card">
+            <div className="login-logo">
+              <span className="login-wave">🌊</span>
+              <span className="login-brand">@ilovepauldomar</span>
+              <span className="login-sub">Creative Portal</span>
+            </div>
+            <form onSubmit={handleSubmit}>
+              <div className="login-field">
+                <label className="login-label">Utilizador</label>
+                <input className="login-input" type="text" value={user}
+                  onChange={e => { setUser(e.target.value); setError(""); }}
+                  placeholder="username" autoFocus />
+              </div>
+              <div className="login-field">
+                <label className="login-label">Password</label>
+                <input className="login-input" type="password" value={pass}
+                  onChange={e => { setPass(e.target.value); setError(""); }}
+                  placeholder="••••••••" />
+              </div>
+              <button className="login-btn" type="submit">Entrar no Portal</button>
+              {error && <div className="login-error">{error}</div>}
+            </form>
+          </div>
+        </div>
+      );
+    }
+
+    // ── PALETTE STRIPE ────────────────────────────────────────────
+    function Stripe({ cores, className = "card-stripe" }) {
+      return (
+        <div className={className}>
+          {cores.map((c, i) => <div key={i} className="card-stripe-seg" style={{ background: c }} />)}
+        </div>
+      );
+    }
+
+    // ── IDEA CARD ─────────────────────────────────────────────────
+    function IdeaCard({ item, onOpen, onStatusChange }) {
+      const cores = parseCores(item);
+      return (
+        <div className="idea-card" onClick={() => onOpen(item)}>
+          <Stripe cores={cores} />
+          <div className="card-inner">
+            <div className="card-top">
+              <span className="card-date">{formatDate(item.data)}</span>
+              <div className="card-badges">
+                {item.canal && <span className={`badge ${getCanalClass(item.canal)}`}>{item.canal}</span>}
+                <span className={`badge ${getStatusClass(item.status)}`}>{item.status || "Nova"}</span>
+              </div>
+            </div>
+            <div className="card-title">{item.tema || "Sem título"}</div>
+            {item.conceito && <p className="card-conceito">{item.conceito}</p>}
+            {item["texto/narração"] && <p className="card-narracao">{item["texto/narração"]}</p>}
+          </div>
+          <div className="card-footer">
+            <div className="palette-row">
+              {cores.map((c, i) => (
+                <div key={i} className="palette-dot" style={{ background: c }} title={c}
+                  onClick={e => e.stopPropagation()} />
+              ))}
+            </div>
+            <div className="card-action-row">
+              <button className="card-btn" onClick={e => { e.stopPropagation(); onStatusChange(item); }}>Estado</button>
+              <button className="card-btn primary" onClick={e => { e.stopPropagation(); onOpen(item); }}>Ver</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ── MODAL ─────────────────────────────────────────────────────
+    function IdeaModal({ item, onClose, onStatusChange }) {
+      const cores = parseCores(item);
+      const statusAtual = (item.status || "Nova");
+
+      useEffect(() => {
+        const h = e => { if (e.key === "Escape") onClose(); };
+        window.addEventListener('keydown', h);
+        return () => window.removeEventListener('keydown', h);
+      }, [onClose]);
+
+      return (
+        <div className="overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+          <div className="modal">
+            <div className="modal-stripe">
+              {cores.map((c, i) => <div key={i} style={{ flex: 1, background: c }} />)}
+            </div>
+            <div className="modal-content">
+              <div className="modal-head">
+                <h2 className="modal-title">{item.tema || "Sem título"}</h2>
+                <button className="modal-close" onClick={onClose}>✕</button>
+              </div>
+
+              <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+                {item.canal && <span className={`badge ${getCanalClass(item.canal)}`}>{item.canal}</span>}
+                <span className={`badge ${getStatusClass(item.status)}`}>{item.status || "Nova"}</span>
+                <span style={{ fontSize: 11, color: 'var(--muted)', marginLeft: 4 }}>{formatDate(item.data)}</span>
+              </div>
+
+              {item.conceito && (
+                <div className="modal-section">
+                  <div className="modal-label">🎨 Conceito Visual · Motion Graphics</div>
+                  <p className="modal-text">{item.conceito}</p>
+                </div>
+              )}
+
+              {item.visual && (
+                <div className="modal-section">
+                  <div className="modal-label">🎬 Especificações Técnicas</div>
+                  <p className="modal-text">{item.visual}</p>
+                </div>
+              )}
+
+              {item["texto/narração"] && (
+                <div className="modal-section">
+                  <div className="modal-label">🎙️ Guião · Narração</div>
+                  <p className="modal-quote">"{item["texto/narração"]}"</p>
+                </div>
+              )}
+
+              <div className="modal-section">
+                <div className="modal-label">🎨 Paleta de Cores</div>
+                <div className="modal-colors">
+                  {cores.map((c, i) => (
+                    <div key={i} className="color-chip">
+                      <div className="color-dot-lg" style={{ background: c }} />
+                      <span className="color-hex">{c.toUpperCase()}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="modal-section">
+                <div className="modal-label">📌 Alterar Estado</div>
+                <div className="status-row">
+                  {["Nova", "Em Produção", "Aprovada", "Arquivo"].map(s => (
+                    <button key={s}
+                      className={`status-opt ${statusAtual === s ? 'active' : ''}`}
+                      onClick={() => onStatusChange(item, s)}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ── LIBRARY ───────────────────────────────────────────────────
+    function Library({ refreshTrigger }) {
+      const [items, setItems]       = useState([]);
+      const [loading, setLoading]   = useState(true);
+      const [error, setError]       = useState(null);
+      const [search, setSearch]     = useState("");
+      const [status, setStatus]     = useState("Todas");
+      const [canal, setCanal]       = useState("Todos");
+      const [selected, setSelected] = useState(null);
+      const [statusPick, setStatusPick] = useState(null);
+
+      const load = useCallback(async () => {
+        setLoading(true); setError(null);
+        try {
+          const res = await fetch(WEBHOOK_LIBRARY, { headers: { Accept: 'application/json' } });
+          if (!res.ok) throw new Error(`Erro ${res.status}`);
+          const data = await res.json();
+          const rows = Array.isArray(data) ? data : (data.data || data.rows || []);
+          setItems(rows.reverse()); // mais recentes primeiro
+        } catch(e) { setError(e.message); }
+        finally { setLoading(false); }
+      }, []);
+
+      useEffect(() => { load(); }, [load, refreshTrigger]);
+
+      const filtered = useMemo(() => items.filter(p => {
+        const s = !search || (p.tema||"").toLowerCase().includes(search.toLowerCase()) ||
+                  (p.conceito||"").toLowerCase().includes(search.toLowerCase());
+        const st = status === "Todas" || (p.status||"Nova").toLowerCase() === status.toLowerCase();
+        const c  = canal === "Todos"  || (p.canal||"").toLowerCase().includes(canal.toLowerCase());
+        return s && st && c;
+      }), [items, search, status, canal]);
+
+      function handleStatusChange(item, novoStatus) {
+        setItems(prev => prev.map(p => p === item ? { ...p, status: novoStatus } : p));
+        if (selected === item) setSelected({ ...item, status: novoStatus });
+        setStatusPick(null);
+      }
+
+      return (
+        <>
+          <div className="library-toolbar">
+            <div className="search-wrap">
+              <span className="search-icon">🔍</span>
+              <input className="search-input" placeholder="Pesquisar ideias..."
+                value={search} onChange={e => setSearch(e.target.value)} />
+            </div>
+            <div className="filter-pills">
+              {["Todas","Nova","Em Produção","Aprovada","Arquivo"].map(s => (
+                <button key={s} className={`pill ${status===s?'active':''}`} onClick={()=>setStatus(s)}>{s}</button>
+              ))}
+            </div>
+            <span className="count-tag">{filtered.length} ideia{filtered.length!==1?'s':''}</span>
+            <button className="refresh-btn" onClick={load}>↺ Actualizar</button>
+          </div>
+
+          <div className="canal-row">
+            {["Todos","Instagram","Site","Signage","Merchandising"].map(c => (
+              <button key={c} className={`pill ${canal===c?'active':''}`} onClick={()=>setCanal(c)}>{c}</button>
+            ))}
+          </div>
+
+          <div className="library-grid">
+            {loading && (
+              <div className="state-box">
+                <div className="spinner" />
+                <p className="state-sub">A carregar biblioteca...</p>
+              </div>
+            )}
+            {!loading && error && (
+              <div className="state-box">
+                <div className="state-icon">⚠️</div>
+                <h3 className="state-title">Erro de ligação</h3>
+                <p className="state-sub">{error}</p>
+                <button className="refresh-btn" style={{margin:'16px auto 0'}} onClick={load}>Tentar novamente</button>
+              </div>
+            )}
+            {!loading && !error && filtered.length === 0 && (
+              <div className="state-box">
+                <div className="state-icon">🌊</div>
+                <h3 className="state-title">Nenhuma ideia encontrada</h3>
+                <p className="state-sub">{search ? `Sem resultados para "${search}".` : "Usa o Assistente Criativo para gerar a primeira ideia."}</p>
+              </div>
+            )}
+            {!loading && !error && filtered.map((item, i) => (
+              <IdeaCard key={i} item={item} onOpen={setSelected} onStatusChange={setStatusPick} />
+            ))}
+          </div>
+
+          {selected && (
+            <IdeaModal item={selected} onClose={() => setSelected(null)} onStatusChange={handleStatusChange} />
+          )}
+
+          {statusPick && !selected && (
+            <div className="overlay" onClick={() => setStatusPick(null)}>
+              <div className="modal" style={{ maxWidth: 380 }} onClick={e => e.stopPropagation()}>
+                <div className="modal-content">
+                  <div className="modal-head">
+                    <h2 className="modal-title" style={{ fontSize: 18 }}>Alterar Estado</h2>
+                    <button className="modal-close" onClick={() => setStatusPick(null)}>✕</button>
+                  </div>
+                  <p style={{ fontSize: 13, color: 'var(--subtle)', marginBottom: 16 }}>{statusPick.tema}</p>
+                  <div className="status-row">
+                    {["Nova","Em Produção","Aprovada","Arquivo"].map(s => (
+                      <button key={s}
+                        className={`status-opt ${(statusPick.status||"Nova")===s?'active':''}`}
+                        onClick={() => handleStatusChange(statusPick, s)}>
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      );
+    }
+
+    // ── CHAT ──────────────────────────────────────────────────────
+    const SUGGESTIONS = [
+      "Cria uma ideia de Reels para o Instagram sobre a pesca tradicional",
+      "Sugere um conceito de merchandising nostálgico para a diáspora",
+      "Gera uma ideia para o site sobre a história do Paul do Mar",
+      "Cria um conceito de Digital Signage para as festas de verão",
+    ];
+
+    function Chat({ onIdeaSaved }) {
+      const [msgs, setMsgs]       = useState([]);
+      const [input, setInput]     = useState("");
+      const [loading, setLoading] = useState(false);
+      const [sessionId]           = useState(genSessionId);
+      const bottomRef             = useRef(null);
+      const textareaRef           = useRef(null);
+
+      useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, [msgs, loading]);
+
+      async function sendMessage(text) {
+        const msg = text || input.trim();
+        if (!msg || loading) return;
+        setInput("");
+
+        const userMsg = { role: 'user', text: msg, time: new Date() };
+        setMsgs(prev => [...prev, userMsg]);
+        setLoading(true);
+
+        try {
+          const res = await fetch(WEBHOOK_CHAT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mensagem: msg, sessionId })
+          });
+
+          if (!res.ok) throw new Error(`Erro ${res.status}`);
+          const data = await res.json();
+
+          // Extrai texto da resposta do n8n
+          let reply = "";
+          if (Array.isArray(data)) {
+            reply = data[0]?.output || data[0]?.text || data[0]?.response || JSON.stringify(data[0]);
+          } else {
+            reply = data.output || data.text || data.response || data.message || JSON.stringify(data);
+          }
+
+          const saved = reply.toLowerCase().includes("guardad") || reply.toLowerCase().includes("arquivad");
+
+          setMsgs(prev => [...prev, {
+            role: 'agent',
+            text: reply,
+            time: new Date(),
+            saved
+          }]);
+
+          if (saved) onIdeaSaved();
+
+        } catch(e) {
+          setMsgs(prev => [...prev, {
+            role: 'agent',
+            text: `⚠️ Erro de ligação ao Assistente: ${e.message}. Verifica se o workflow está activo no n8n.`,
+            time: new Date()
+          }]);
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      function handleKey(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      }
+
+      return (
+        <div className="chat-panel">
+          <div className="chat-header">
+            <div className="chat-title">✦ Assistente Criativo</div>
+            <div className="chat-subtitle">Pede qualquer ideia · Paul do Mar · Diáspora</div>
+          </div>
+
+          <div className="chat-messages">
+            {msgs.length === 0 && (
+              <div className="chat-welcome">
+                <div className="chat-welcome-icon">🌊</div>
+                <div className="chat-welcome-title">Olá, criativo!</div>
+                <p className="chat-welcome-text">
+                  Sou o teu Assistente Criativo para o @ilovepauldomar.<br/>
+                  Pede-me qualquer ideia — Reels, Motion Graphics, merchandising, copy para o site...
+                </p>
+              </div>
+            )}
+
+            {msgs.map((m, i) => (
+              <div key={i} className={`msg msg-${m.role}`}>
+                <div className={`msg-bubble ${m.saved ? 'saved' : ''}`}>
+                  {m.text}
+                </div>
+                <span className="msg-time">{formatTime(m.time)}</span>
+              </div>
+            ))}
+
+            {loading && (
+              <div className="msg msg-agent">
+                <div className="msg-bubble">
+                  <div className="msg-typing">
+                    <div className="typing-dot" />
+                    <div className="typing-dot" />
+                    <div className="typing-dot" />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div ref={bottomRef} />
+          </div>
+
+          {msgs.length === 0 && (
+            <div className="chat-suggestions">
+              {SUGGESTIONS.map((s, i) => (
+                <button key={i} className="suggestion-btn" onClick={() => sendMessage(s)}>
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="chat-input-area">
+            <textarea
+              ref={textareaRef}
+              className="chat-textarea"
+              placeholder="Pede uma ideia ao assistente..."
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKey}
+              rows={1}
+            />
+            <button className="chat-send" onClick={() => sendMessage()} disabled={loading || !input.trim()}>
+              ➤
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // ── SOCIAL CONFIG ─────────────────────────────────────────────
+    const WEBHOOK_SOCIAL            = "https://n8n.ilovepauldomar.pt/webhook/social-gerador";
+    const WEBHOOK_SOCIAL_BIBLIOTECA = "https://n8n.ilovepauldomar.pt/webhook/social-biblioteca";
+
+    const REDES   = ["Instagram", "Facebook"];
+    const TIPOS   = ["Feed", "Reels", "Stories", "Vídeo"];
+    const TEMAS_SUGERIDOS = [
+      "Pesca tradicional ao amanhecer",
+      "Festas de verão na freguesia",
+      "Receitas tradicionais da Madeira",
+      "Saudades da diáspora paulense",
+      "História e cultura do Paul do Mar",
+      "Paisagens e natureza da freguesia",
+    ];
+
+    // ── SOCIAL BIBLIOTECA ─────────────────────────────────────────
+    function SocialBiblioteca() {
+      const [items, setItems]     = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [error, setError]     = useState(null);
+      const [search, setSearch]   = useState("");
+      const [rede, setRede]       = useState("Todas");
+      const [selected, setSelected] = useState(null);
+      const [copied, setCopied]   = useState(null);
+
+      const load = useCallback(async () => {
+        setLoading(true); setError(null);
+        try {
+          const res = await fetch(WEBHOOK_SOCIAL_BIBLIOTECA, { headers: { Accept: 'application/json' } });
+          if (!res.ok) throw new Error(`Erro ${res.status}`);
+          const data = await res.json();
+          const rows = Array.isArray(data) ? data : (data.data || data.rows || []);
+          setItems(rows.reverse());
+        } catch(e) { setError(e.message); }
+        finally { setLoading(false); }
+      }, []);
+
+      useEffect(() => { load(); }, [load]);
+
+      const filtered = useMemo(() => items.filter(p => {
+        const s = !search ||
+          (p.tema||"").toLowerCase().includes(search.toLowerCase()) ||
+          (p.legenda||"").toLowerCase().includes(search.toLowerCase());
+        const r = rede === "Todas" || (p.rede||"").toLowerCase().includes(rede.toLowerCase());
+        return s && r;
+      }), [items, search, rede]);
+
+      function copyText(text, key) {
+        navigator.clipboard.writeText(text||"").then(() => {
+          setCopied(key);
+          setTimeout(() => setCopied(null), 2000);
+        });
+      }
+
+      function parseHashtags(raw) {
+        if (!raw) return [];
+        if (Array.isArray(raw)) return raw;
+        return raw.split(/[,\s]+/).filter(t => t.trim());
+      }
+
+      function getRedeBadgeClass(r) {
+        if (!r) return "badge-canal-default";
+        return r.toLowerCase().includes("instagram") ? "badge-instagram" : "badge-facebook";
+      }
+
+      return (
+        <div className="social-biblioteca">
+          {/* TOOLBAR */}
+          <div className="soc-toolbar">
+            <div className="search-wrap" style={{ maxWidth: 280 }}>
+              <span className="search-icon">🔍</span>
+              <input className="search-input" placeholder="Pesquisar conteúdos..."
+                value={search} onChange={e => setSearch(e.target.value)} />
+            </div>
+            <div className="filter-pills">
+              {["Todas","Instagram","Facebook"].map(r => (
+                <button key={r} className={`pill ${rede===r?'active':''}`} onClick={() => setRede(r)}>{r}</button>
+              ))}
+            </div>
+            <span className="count-tag">{filtered.length} publicaç{filtered.length!==1?'ões':'ão'}</span>
+            <button className="refresh-btn" onClick={load}>↺ Actualizar</button>
+          </div>
+
+          {/* GRID */}
+          <div className="soc-grid">
+            {loading && (
+              <div className="state-box" style={{ gridColumn: '1/-1' }}>
+                <div className="spinner" />
+                <p className="state-sub">A carregar biblioteca social...</p>
+              </div>
+            )}
+            {!loading && error && (
+              <div className="state-box" style={{ gridColumn: '1/-1' }}>
+                <div className="state-icon">⚠️</div>
+                <h3 className="state-title">Erro de ligação</h3>
+                <p className="state-sub">{error}</p>
+                <button className="refresh-btn" style={{ margin: '16px auto 0' }} onClick={load}>Tentar novamente</button>
+              </div>
+            )}
+            {!loading && !error && filtered.length === 0 && (
+              <div className="state-box" style={{ gridColumn: '1/-1' }}>
+                <div className="state-icon">📱</div>
+                <h3 className="state-title">Nenhum conteúdo encontrado</h3>
+                <p className="state-sub">{search ? `Sem resultados para "${search}".` : "Usa o Gerador para criar o primeiro conteúdo social."}</p>
+              </div>
+            )}
+            {!loading && !error && filtered.map((item, i) => {
+              const tags = parseHashtags(item.hashtags);
+              return (
+                <div key={i} className="soc-card" onClick={() => setSelected(item)}>
+                  <div className="soc-card-header">
+                    <span className={`result-network-badge ${getRedeBadgeClass(item.rede)}`}>
+                      {item.rede?.toLowerCase().includes("instagram") ? "📸" : "👥"} {item.rede || "—"}
+                    </span>
+                    {item.tipo && <span className="result-type">{item.tipo}</span>}
+                    {item.hora_publicacao && (
+                      <span style={{ marginLeft: 'auto', fontSize: 10, color: 'var(--gold)' }}>
+                        🕐 {item.hora_publicacao}
+                      </span>
+                    )}
+                  </div>
+                  <div className="soc-card-body">
+                    {item.tema && (
+                      <div style={{ fontSize: 13, fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, color: 'var(--bright)' }}>
+                        {item.tema}
+                      </div>
+                    )}
+                    {item.legenda && <p className="soc-legenda">{item.legenda}</p>}
+                    {tags.length > 0 && (
+                      <div className="soc-hashtags">
+                        {tags.slice(0, 6).map((t, j) => (
+                          <span key={j} className="soc-tag">{t}</span>
+                        ))}
+                        {tags.length > 6 && (
+                          <span className="soc-tag">+{tags.length - 6}</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="soc-card-footer">
+                    <span>{formatDate(item.data)}</span>
+                    <span className={`badge ${getStatusClass(item.status)}`}>{item.status || "Nova"}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* MODAL */}
+          {selected && (
+            <div className="overlay" onClick={() => setSelected(null)}>
+              <div className="modal" onClick={e => e.stopPropagation()}>
+                <div className="modal-content">
+                  <div className="modal-head">
+                    <h2 className="modal-title">{selected.tema || "Conteúdo Social"}</h2>
+                    <button className="modal-close" onClick={() => setSelected(null)}>✕</button>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+                    <span className={`result-network-badge ${getRedeBadgeClass(selected.rede)}`}>
+                      {selected.rede?.toLowerCase().includes("instagram") ? "📸" : "👥"} {selected.rede}
+                    </span>
+                    {selected.tipo && <span className="result-type">{selected.tipo}</span>}
+                    <span className={`badge ${getStatusClass(selected.status)}`}>{selected.status || "Nova"}</span>
+                    <span style={{ fontSize: 11, color: 'var(--muted)', marginLeft: 4 }}>{formatDate(selected.data)}</span>
+                  </div>
+
+                  {selected.legenda && (
+                    <div className="modal-section">
+                      <div className="modal-label">
+                        Legenda
+                        <button className={`copy-btn ${copied==='leg'?'copied':''}`}
+                          onClick={() => copyText(selected.legenda, 'leg')}>
+                          {copied==='leg' ? '✓ Copiado' : 'Copiar'}
+                        </button>
+                      </div>
+                      <p className="soc-modal-legenda">{selected.legenda}</p>
+                    </div>
+                  )}
+
+                  {selected.hashtags && (
+                    <div className="modal-section">
+                      <div className="modal-label">
+                        Hashtags
+                        <button className={`copy-btn ${copied==='tags'?'copied':''}`}
+                          onClick={() => copyText(
+                            Array.isArray(selected.hashtags) ? selected.hashtags.join(' ') : selected.hashtags,
+                            'tags'
+                          )}>
+                          {copied==='tags' ? '✓ Copiado' : 'Copiar todas'}
+                        </button>
+                      </div>
+                      <div className="hashtag-cloud">
+                        {parseHashtags(selected.hashtags).map((t, j) => (
+                          <span key={j} className="hashtag-chip" onClick={() => copyText(t, `t${j}`)}>{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {selected.cta && (
+                    <div className="modal-section">
+                      <div className="modal-label">Call to Action</div>
+                      <div className="cta-box">{selected.cta}</div>
+                    </div>
+                  )}
+
+                  {selected.notas_visuais && (
+                    <div className="modal-section">
+                      <div className="modal-label">Notas Visuais</div>
+                      <div className="notas-box">{selected.notas_visuais}</div>
+                    </div>
+                  )}
+
+                  {selected.hora_publicacao && (
+                    <div className="modal-section">
+                      <div className="modal-label">⏰ Melhor Hora de Publicação</div>
+                      <p className="modal-text" style={{ color: 'var(--gold)' }}>{selected.hora_publicacao}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ── SOCIAL PANEL (com tabs) ───────────────────────────────────
+    function SocialPanel() {
+      const [tab, setTab] = useState("gerador");
+      const [rede, setRede]         = useState("Instagram");
+      const [tipo, setTipo]         = useState("Feed");
+      const [tema, setTema]         = useState("");
+      const [loading, setLoading]   = useState(false);
+      const [result, setResult]     = useState(null);
+      const [error, setError]       = useState(null);
+      const [copied, setCopied]     = useState(null);
+      const [saved, setSaved]       = useState(false);
+      const [saving, setSaving]     = useState(false);
+
+      async function handleGenerate() {
+        if (!tema.trim()) return;
+        setLoading(true);
+        setError(null);
+        setResult(null);
+        setSaved(false);
+
+        const prompt = `Gera conteúdo para ${rede} (formato ${tipo}) sobre o seguinte tema: ${tema}`;
+
+        try {
+          const res = await fetch(WEBHOOK_SOCIAL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mensagem: prompt, sessionId: 'social-' + Date.now() })
+          });
+          if (!res.ok) throw new Error(`Erro ${res.status}`);
+          const rawText = await res.text();
+          let data = {};
+          try {
+            const parsed = JSON.parse(rawText);
+            const output = Array.isArray(parsed)
+              ? (parsed[0]?.output || parsed[0]?.text || "")
+              : (parsed.output || parsed.text || rawText);
+            const match = output.match(/\{[\s\S]*\}/);
+            if (match) data = JSON.parse(match[0]);
+            else data = { legenda: output };
+          } catch(e) {
+            data = { legenda: rawText };
+          }
+          setResult(data);
+        } catch(e) {
+          setError(e.message);
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      function copyText(text, key) {
+        navigator.clipboard.writeText(text).then(() => {
+          setCopied(key);
+          setTimeout(() => setCopied(null), 2000);
+        });
+      }
+
+      function copyHashtags() {
+        if (!result?.hashtags) return;
+        const tags = Array.isArray(result.hashtags) ? result.hashtags.join(' ') : result.hashtags;
+        copyText(tags, 'hashtags');
+      }
+
+      async function handleSave() {
+        if (!result || saved) return;
+        setSaving(true);
+        try {
+          const prompt = `Guarda na folha de redes sociais os seguintes dados:
+rede: ${result.rede || rede}
+tipo: ${result.tipo || tipo}
+tema: ${tema}
+legenda: ${result.legenda || ''}
+hashtags: ${Array.isArray(result.hashtags) ? result.hashtags.join(', ') : (result.hashtags || '')}
+cta: ${result.cta || ''}
+hora_publicacao: ${result.hora_publicacao || ''}
+notas_visuais: ${result.notas_visuais || ''}
+status: Nova`;
+
+          await fetch(WEBHOOK_SOCIAL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mensagem: prompt, sessionId: 'save-' + Date.now() })
+          });
+          setSaved(true);
+        } catch(e) {
+          console.error('Erro ao guardar:', e);
+        } finally {
+          setSaving(false);
+        }
+      }
+
+      return (
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          {/* TABS */}
+          <div className="social-tabs">
+            <button className={`social-tab ${tab==='gerador'?'active':''}`} onClick={() => setTab('gerador')}>
+              ✨ Gerador
+            </button>
+            <button className={`social-tab ${tab==='biblioteca'?'active':''}`} onClick={() => setTab('biblioteca')}>
+              📚 Biblioteca
+            </button>
+          </div>
+
+          {/* GERADOR */}
+          {tab === 'gerador' && (
+            <div className="social-panel">
+              <div className="social-gen">
+                <div className="social-gen-header">
+                  <div className="social-gen-title">📱 Gerador de Conteúdo</div>
+                  <div className="social-gen-sub">Instagram · Facebook · @ilovepauldomar</div>
+                </div>
+                <div className="social-gen-form">
+                  <div className="form-group">
+                    <label className="form-label">Rede Social</label>
+                    <div className="toggle-group">
+                      {REDES.map(r => (
+                        <button key={r} className={`toggle-btn ${rede===r?'active':''}`} onClick={() => setRede(r)}>
+                          {r === 'Instagram' ? '📸' : '👥'} {r}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Formato</label>
+                    <div className="toggle-group">
+                      {TIPOS.map(t => (
+                        <button key={t} className={`toggle-btn ${tipo===t?'active':''}`} onClick={() => setTipo(t)}>{t}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Tema / Contexto</label>
+                    <textarea className="form-textarea"
+                      placeholder="Descreve o tema ou contexto da publicação..."
+                      value={tema} onChange={e => setTema(e.target.value)} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Sugestões rápidas</label>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                      {TEMAS_SUGERIDOS.map((s, i) => (
+                        <button key={i} className="suggestion-btn"
+                          onClick={() => setTema(s)}
+                          style={{ textAlign: 'left', fontSize: 12 }}>{s}</button>
+                      ))}
+                    </div>
+                  </div>
+                  {error && (
+                    <div style={{ padding: '10px 14px', background: 'rgba(192,74,42,0.1)', border: '1px solid rgba(192,74,42,0.3)', borderRadius: 8, fontSize: 12, color: '#ff8070' }}>
+                      ⚠️ {error}
+                    </div>
+                  )}
+                  <button className="btn-generate" onClick={handleGenerate} disabled={loading || !tema.trim()}>
+                    {loading ? (
+                      <><div className="spinner" style={{ width: 16, height: 16, borderWidth: 2, margin: 0 }} /> A gerar...</>
+                    ) : '✨ Gerar Conteúdo'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="social-output">
+                <div className="social-output-header">
+                  <span className="social-output-title">{result ? '✅ Conteúdo Gerado' : '📋 Resultado'}</span>
+                  {result && (
+                    <button className="btn-save-social" onClick={handleSave} disabled={saved || saving}>
+                      {saving ? '⏳ A guardar...' : saved ? '✅ Guardado' : '💾 Guardar na Biblioteca'}
+                    </button>
+                  )}
+                </div>
+                <div className="social-output-body">
+                  {!result && !loading && (
+                    <div className="social-empty">
+                      <div className="social-empty-icon">{rede === 'Instagram' ? '📸' : '👥'}</div>
+                      <div className="social-empty-title">Pronto para criar</div>
+                      <p className="social-empty-sub">Escolhe a rede, o formato e o tema.<br/>O agente gera a legenda, hashtags e CTA optimizados para o @ilovepauldomar.</p>
+                    </div>
+                  )}
+                  {loading && (
+                    <div className="social-empty">
+                      <div className="spinner" style={{ marginBottom: 16 }} />
+                      <p className="social-empty-sub">O agente está a criar o conteúdo...</p>
+                    </div>
+                  )}
+                  {result && !loading && (
+                    <div className="result-card">
+                      <div className="result-header">
+                        <span className={`result-network-badge ${rede==='Instagram'?'badge-instagram':'badge-facebook'}`}>
+                          {rede==='Instagram'?'📸':'👥'} {result.rede || rede}
+                        </span>
+                        <span className="result-type">{result.tipo || tipo}</span>
+                        {result.hora_publicacao && <span className="result-hora">🕐 {result.hora_publicacao}</span>}
+                      </div>
+                      {result.legenda && (
+                        <div className="result-section">
+                          <div className="result-section-label">
+                            Legenda
+                            <button className={`copy-btn ${copied==='legenda'?'copied':''}`} onClick={() => copyText(result.legenda, 'legenda')}>
+                              {copied==='legenda'?'✓ Copiado':'Copiar'}
+                            </button>
+                          </div>
+                          <p className="result-text">{result.legenda}</p>
+                        </div>
+                      )}
+                      {result.hashtags && result.hashtags.length > 0 && (
+                        <div className="result-section">
+                          <div className="result-section-label">
+                            Hashtags ({Array.isArray(result.hashtags) ? result.hashtags.length : '—'})
+                            <button className={`copy-btn ${copied==='hashtags'?'copied':''}`} onClick={copyHashtags}>
+                              {copied==='hashtags'?'✓ Copiado':'Copiar todas'}
+                            </button>
+                          </div>
+                          <div className="hashtag-cloud">
+                            {(Array.isArray(result.hashtags)?result.hashtags:result.hashtags.split(' ')).map((tag,i) => (
+                              <span key={i} className="hashtag-chip" onClick={() => copyText(tag, `tag-${i}`)}>{tag}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {result.cta && (
+                        <div className="result-section">
+                          <div className="result-section-label">
+                            Call to Action
+                            <button className={`copy-btn ${copied==='cta'?'copied':''}`} onClick={() => copyText(result.cta, 'cta')}>
+                              {copied==='cta'?'✓ Copiado':'Copiar'}
+                            </button>
+                          </div>
+                          <div className="cta-box">{result.cta}</div>
+                        </div>
+                      )}
+                      {result.notas_visuais && (
+                        <div className="result-section">
+                          <div className="result-section-label">Notas Visuais</div>
+                          <div className="notas-box">{result.notas_visuais}</div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* BIBLIOTECA */}
+          {tab === 'biblioteca' && <SocialBiblioteca />}
+        </div>
+      );
+    }
+
+    // ── DAM CONFIG ────────────────────────────────────────────────
+    const DAM_API = "https://dam-api.ilovepauldomar.pt";
+
+    const SENTIMENT_MAP = {
+      nostalgia:   { label: "Nostalgia",   cls: "sentiment-nostalgia",  icon: "🌊" },
+      resilience:  { label: "Resiliência", cls: "sentiment-resilience", icon: "💪" },
+      calm:        { label: "Calma",       cls: "sentiment-calm",       icon: "🕊️" },
+      joy:         { label: "Alegria",     cls: "sentiment-joy",        icon: "✨" },
+      melancholy:  { label: "Melancolia",  cls: "sentiment-melancholy", icon: "🌧️" },
+    };
+
+    function formatBytes(bytes) {
+      if (!bytes) return "—";
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + " KB";
+      return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+    }
+
+    function getThumbUrl(asset) {
+      if (asset.thumbnail_path) {
+        // Remove o prefixo /nas_assets/ e constrói o URL correcto
+        const relativePath = asset.thumbnail_path.replace("/nas_assets/", "");
+        return `${DAM_API}/media/${relativePath}`;
+      }
+      if (asset.asset_type === "image") {
+        const relativePath = asset.file_path.replace("/nas_assets/", "");
+        return `${DAM_API}/media/${encodeURIComponent(relativePath).replace(/%2F/g, "/")}`;
+      }
+      return null;
+    }
+
+    // ── DAM PANEL ─────────────────────────────────────────────────
+    function DAMPanel() {
+      const [assets, setAssets]       = useState([]);
+      const [loading, setLoading]     = useState(true);
+      const [error, setError]         = useState(null);
+      const [search, setSearch]       = useState("");
+      const [typeFilter, setTypeFilter] = useState("all");
+      const [sentimentFilter, setSentimentFilter] = useState("all");
+      const [selected, setSelected]   = useState(null);
+      const [scanning, setScanning]   = useState(false);
+      const [scanResult, setScanResult] = useState(null);
+      const [analysing, setAnalysing] = useState(false);
+      const [copied, setCopied]       = useState(null);
+      const [scanModalOpen, setScanModalOpen] = useState(false);
+      const [scanPaths, setScanPaths]         = useState(["/nas_assets"]);
+      const [newPath, setNewPath]             = useState("");
+
+      const load = useCallback(async () => {
+        setLoading(true); setError(null);
+        try {
+          const res = await fetch(`${DAM_API}/assets/?limit=100`);
+          if (!res.ok) throw new Error(`Erro ${res.status} — verifica se a API do DAM está acessível em ${DAM_API}`);
+          const data = await res.json();
+          setAssets(Array.isArray(data) ? data : []);
+        } catch(e) { setError(e.message); }
+        finally { setLoading(false); }
+      }, []);
+
+      useEffect(() => { load(); }, [load]);
+
+      const filtered = useMemo(() => assets.filter(a => {
+        const s = !search ||
+          (a.filename||"").toLowerCase().includes(search.toLowerCase()) ||
+          (a.ai_description||"").toLowerCase().includes(search.toLowerCase()) ||
+          (a.cultural_context||"").toLowerCase().includes(search.toLowerCase()) ||
+          (a.ai_tags||[]).some(t => t.toLowerCase().includes(search.toLowerCase()));
+        const t = typeFilter === "all" || a.asset_type === typeFilter;
+        const sent = sentimentFilter === "all" || a.emotional_sentiment === sentimentFilter;
+        return s && t && sent;
+      }), [assets, search, typeFilter, sentimentFilter]);
+
+        async function handleScan() {
+          setScanning(true); setScanResult(null); setScanModalOpen(false);
+          const allResults = { total_files_found: 0, new_assets_indexed: 0, existing_assets_skipped: 0, errors: [] };
+          try {
+            for (const path of scanPaths) {
+              const url = path === "/nas_assets"
+                ? `${DAM_API}/indexing/scan`
+                : `${DAM_API}/indexing/scan?directory=${encodeURIComponent(path)}`;
+              const res = await fetch(url, { method: 'POST' });
+              if (!res.ok) throw new Error(`Erro ${res.status} no path ${path}`);
+              const data = await res.json();
+              allResults.total_files_found    += data.total_files_found || 0;
+              allResults.new_assets_indexed   += data.new_assets_indexed || 0;
+              allResults.existing_assets_skipped += data.existing_assets_skipped || 0;
+              allResults.errors = [...allResults.errors, ...(data.errors || [])];
+            }
+            setScanResult(allResults);
+            await load();
+          } catch(e) { setError(e.message); }
+          finally { setScanning(false); }
+        }
+
+      async function handleAnalyse(asset) {
+        setAnalysing(true);
+        try {
+          const res = await fetch(`${DAM_API}/assets/${asset.id}/analyze`, { method: 'POST' });
+          if (!res.ok) throw new Error(`Erro ${res.status}`);
+          const data = await res.json();
+          setAssets(prev => prev.map(a => a.id === asset.id ? data.asset : a));
+          setSelected(data.asset);
+        } catch(e) { alert(`Erro na análise: ${e.message}`); }
+        finally { setAnalysing(false); }
+      }
+
+      function copyText(text, key) {
+        navigator.clipboard.writeText(text||"").then(() => {
+          setCopied(key);
+          setTimeout(() => setCopied(null), 2000);
+        });
+      }
+
+      const sentimentInfo = selected?.emotional_sentiment
+        ? (SENTIMENT_MAP[selected.emotional_sentiment] || { label: selected.emotional_sentiment, cls: '', icon: '•' })
+        : null;
+
+      return (
+        <div className="dam-panel">
+          {/* TOOLBAR */}
+            <div className="dam-toolbar">
+              <div className="search-wrap" style={{ maxWidth: 280 }}>
+                <span className="search-icon">🔍</span>
+                <input className="search-input" placeholder="Pesquisar assets, tags, descrições..."
+                  value={search} onChange={e => setSearch(e.target.value)} />
+              </div>
+              <div className="filter-pills">
+                {[["all","Todos"],["image","Imagens"],["video","Vídeos"]].map(([v,l]) => (
+                  <button key={v} className={`pill ${typeFilter===v?'active':''}`} onClick={() => setTypeFilter(v)}>{l}</button>
+                ))}
+              </div>
+              <select className="filter-select" style={{ fontSize: 12, padding: '5px 10px' }}
+                value={sentimentFilter} onChange={e => setSentimentFilter(e.target.value)}>
+                <option value="all">Todos os sentimentos</option>
+                {Object.entries(SENTIMENT_MAP).map(([k,v]) => (
+                  <option key={k} value={k}>{v.icon} {v.label}</option>
+                ))}
+              </select>
+              <span className="count-tag">{filtered.length} asset{filtered.length!==1?'s':''}</span>
+              <button className="refresh-btn" onClick={load}>↺</button>
+              <button className="dam-scan-btn" onClick={() => setScanModalOpen(true)} disabled={scanning}>
+                {scanning ? <><div className="spinner" style={{width:14,height:14,borderWidth:2,margin:0}}/> A indexar...</> : '📂 Scan NAS'}
+              </button>
+            </div>
+
+          {/* SCAN RESULT */}
+          {scanResult && (
+            <div style={{ padding: '8px 24px', background: 'rgba(63,185,80,0.08)', borderBottom: '1px solid rgba(63,185,80,0.2)', fontSize: 12, color: '#3fb950', display: 'flex', gap: 16 }}>
+              ✅ Scan concluído —
+              <span>{scanResult.total_files_found} ficheiros encontrados</span>
+              <span>{scanResult.new_assets_indexed} novos indexados</span>
+              <span>{scanResult.existing_assets_skipped} já existentes</span>
+              {scanResult.errors?.length > 0 && <span style={{color:'#ff8070'}}>{scanResult.errors.length} erros</span>}
+              <button style={{marginLeft:'auto',background:'none',border:'none',color:'var(--muted)',cursor:'pointer',fontSize:12}} onClick={() => setScanResult(null)}>✕</button>
+            </div>
+          )}
+
+          {/* GRID */}
+          <div className="dam-grid">
+            {loading && (
+              <div className="state-box" style={{gridColumn:'1/-1'}}>
+                <div className="spinner"/>
+                <p className="state-sub">A carregar assets do DAM...</p>
+              </div>
+            )}
+            {!loading && error && (
+              <div className="state-box" style={{gridColumn:'1/-1'}}>
+                <div className="state-icon">⚠️</div>
+                <h3 className="state-title">API do DAM inacessível</h3>
+                <p className="state-sub">{error}</p>
+                <p style={{fontSize:11,color:'var(--muted)',marginTop:8}}>Verifica se os containers ilpdm_api e ilpdm_postgres estão a correr no DS220+</p>
+                <button className="refresh-btn" style={{margin:'16px auto 0'}} onClick={load}>Tentar novamente</button>
+              </div>
+            )}
+            {!loading && !error && filtered.length === 0 && (
+              <div className="state-box" style={{gridColumn:'1/-1'}}>
+                <div className="state-icon">🗂️</div>
+                <h3 className="state-title">{search ? 'Nenhum resultado' : 'DAM vazio'}</h3>
+                <p className="state-sub">{search ? `Sem assets para "${search}".` : 'Clica em "Scan NAS" para indexar os teus assets.'}</p>
+              </div>
+            )}
+            {!loading && !error && filtered.map((asset, i) => {
+              const thumbUrl = getThumbUrl(asset);
+              return (
+                <div key={asset.id} className="dam-card" onClick={() => setSelected(asset)}
+                  style={{ animationDelay: `${Math.min(i * 0.04, 0.3)}s` }}>
+                  {thumbUrl
+                    ? <img className="dam-thumb" src={thumbUrl} alt={asset.filename}
+                        onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex'; }} />
+                    : null
+                  }
+                  <div className="dam-thumb-placeholder" style={{ display: thumbUrl ? 'none' : 'flex' }}>
+                    {asset.asset_type === 'video' ? '🎬' : '🖼️'}
+                  </div>
+                  <div className="dam-card-info">
+                    <div className="dam-card-name" title={asset.filename}>{asset.filename}</div>
+                    <div className="dam-card-meta">
+                      <span>{asset.asset_type === 'video' ? '🎬' : '🖼️'}</span>
+                      <span>{formatBytes(asset.file_size)}</span>
+                      {asset.ai_analyzed && <span className="dam-ai-badge">✦ IA</span>}
+                    </div>
+                  </div>
+                  {asset.ai_tags?.length > 0 && (
+                    <div className="dam-tags">
+                      {asset.ai_tags.slice(0, 4).map((t, j) => (
+                        <span key={j} className="dam-tag">{t}</span>
+                      ))}
+                      {asset.ai_tags.length > 4 && <span className="dam-tag">+{asset.ai_tags.length-4}</span>}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* DETAIL MODAL */}
+          {selected && (
+            <div className="overlay" onClick={() => setSelected(null)}>
+              <div className={`modal dam-modal`} onClick={e => e.stopPropagation()}>
+                <div className="modal-content">
+                  <div className="modal-head">
+                    <h2 className="modal-title" style={{fontSize:18}}>{selected.filename}</h2>
+                    <div style={{display:'flex',gap:8,alignItems:'center'}}>
+                      <button className="dam-btn-analyse" onClick={() => handleAnalyse(selected)} disabled={analysing}>
+                        {analysing ? '⏳ A analisar...' : selected.ai_analyzed ? '↺ Re-analisar' : '✦ Analisar com IA'}
+                      </button>
+                      <button className="modal-close" onClick={() => setSelected(null)}>✕</button>
+                    </div>
+                  </div>
+
+                  {/* IMAGEM/THUMB */}
+                  {getThumbUrl(selected) && (
+                    <img className="dam-modal-img" src={getThumbUrl(selected)} alt={selected.filename} />
+                  )}
+
+                  {/* META GRID */}
+                  <div className="dam-meta-grid">
+                    <div className="dam-meta-item">
+                      <div className="dam-meta-label">Tipo</div>
+                      <div className="dam-meta-value">{selected.asset_type === 'video' ? '🎬 Vídeo' : '🖼️ Imagem'}</div>
+                    </div>
+                    <div className="dam-meta-item">
+                      <div className="dam-meta-label">Tamanho</div>
+                      <div className="dam-meta-value">{formatBytes(selected.file_size)}</div>
+                    </div>
+                    {selected.width && (
+                      <div className="dam-meta-item">
+                        <div className="dam-meta-label">Dimensões</div>
+                        <div className="dam-meta-value">{selected.width} × {selected.height}px</div>
+                      </div>
+                    )}
+                    {selected.emotional_sentiment && sentimentInfo && (
+                      <div className="dam-meta-item">
+                        <div className="dam-meta-label">Sentimento</div>
+                        <span className={`dam-sentiment ${sentimentInfo.cls}`}>
+                          {sentimentInfo.icon} {sentimentInfo.label}
+                        </span>
+                      </div>
+                    )}
+                    {selected.seasonality && (
+                      <div className="dam-meta-item">
+                        <div className="dam-meta-label">Época</div>
+                        <div className="dam-meta-value">{selected.seasonality}</div>
+                      </div>
+                    )}
+                    {selected.target_audience && (
+                      <div className="dam-meta-item">
+                        <div className="dam-meta-label">Público-alvo</div>
+                        <div className="dam-meta-value">{selected.target_audience}</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* DESCRIÇÃO IA */}
+                  {selected.ai_description && (
+                    <div className="modal-section">
+                      <div className="modal-label">✦ Descrição IA</div>
+                      <p className="modal-text">{selected.ai_description}</p>
+                    </div>
+                  )}
+
+                  {/* CONTEXTO CULTURAL */}
+                  {selected.cultural_context && (
+                    <div className="modal-section">
+                      <div className="modal-label">🏠 Contexto Cultural</div>
+                      <p className="modal-text">{selected.cultural_context}</p>
+                    </div>
+                  )}
+
+                  {/* SOCIAL COPY */}
+                  {selected.social_copy && (
+                    <div className="modal-section">
+                      <div className="modal-label">
+                        📱 Social Copy
+                        <button className={`copy-btn ${copied==='sc'?'copied':''}`}
+                          onClick={() => copyText(selected.social_copy, 'sc')}>
+                          {copied==='sc'?'✓ Copiado':'Copiar'}
+                        </button>
+                      </div>
+                      <p className="dam-social-copy">{selected.social_copy}</p>
+                    </div>
+                  )}
+
+                  {/* TAGS IA */}
+                  {selected.ai_tags?.length > 0 && (
+                    <div className="modal-section">
+                      <div className="modal-label">🏷️ Tags IA</div>
+                      <div className="hashtag-cloud">
+                        {selected.ai_tags.map((t, i) => (
+                          <span key={i} className="hashtag-chip" onClick={() => copyText(t, `t${i}`)}>{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* PATH */}
+                  <div className="modal-section">
+                    <div className="modal-label">📁 Caminho</div>
+                    <p style={{fontSize:11,color:'var(--muted)',fontFamily:'monospace'}}>{selected.file_path}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+              
+            {/* SCAN MODAL */}
+            {scanModalOpen && (
+              <div className="overlay" onClick={() => setScanModalOpen(false)}>
+                <div className="modal" style={{ maxWidth: 480 }} onClick={e => e.stopPropagation()}>
+                  <div className="modal-content">
+                    <div className="modal-head">
+                      <h2 className="modal-title" style={{ fontSize: 18 }}>📂 Configurar Scan NAS</h2>
+                      <button className="modal-close" onClick={() => setScanModalOpen(false)}>✕</button>
+                    </div>
+
+                    <div className="modal-section">
+                      <div className="modal-label">Caminhos a indexar</div>
+                      <p style={{ fontSize: 12, color: 'var(--subtle)', marginBottom: 12 }}>
+                        O scan é recursivo — entra automaticamente em todas as subpastas.
+                      </p>
+                      {scanPaths.map((p, i) => (
+                        <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
+                          <div style={{
+                            flex: 1, padding: '8px 12px', background: 'var(--surface)',
+                            border: '1px solid var(--border)', borderRadius: 8,
+                            fontSize: 12, fontFamily: 'monospace', color: 'var(--body)'
+                          }}>
+                            {p}
+                          </div>
+                          {scanPaths.length > 1 && (
+                            <button onClick={() => setScanPaths(prev => prev.filter((_,j) => j !== i))}
+                              style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 16 }}>
+                              ✕
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="modal-section">
+                      <div className="modal-label">Adicionar caminho</div>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <input
+                          style={{
+                            flex: 1, padding: '8px 12px', background: 'var(--surface)',
+                            border: '1px solid var(--border)', borderRadius: 8,
+                            color: 'var(--bright)', fontFamily: 'monospace', fontSize: 12, outline: 'none'
+                          }}
+                          placeholder="/nas_assets/fotos"
+                          value={newPath}
+                          onChange={e => setNewPath(e.target.value)}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter' && newPath.trim()) {
+                              setScanPaths(prev => [...prev, newPath.trim()]);
+                              setNewPath("");
+                            }
+                          }}
+                        />
+                        <button className="dam-scan-btn" style={{ whiteSpace: 'nowrap' }}
+                          onClick={() => {
+                            if (newPath.trim()) {
+                              setScanPaths(prev => [...prev, newPath.trim()]);
+                              setNewPath("");
+                            }
+                          }}>
+                          + Adicionar
+                        </button>
+                      </div>
+                      <p style={{ fontSize: 11, color: 'var(--muted)', marginTop: 6 }}>
+                        Prima Enter ou clica em Adicionar. Os caminhos são relativos ao container Docker.
+                      </p>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 8 }}>
+                      <button className="refresh-btn" onClick={() => setScanModalOpen(false)}>Cancelar</button>
+                      <button className="dam-scan-btn" onClick={handleScan} disabled={scanning}>
+                        🚀 Iniciar Scan
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}              
+              
+        </div>
+      );
+    }
+
+    // ── APP ───────────────────────────────────────────────────────
+    function App() {
+      const saved = sessionStorage.getItem(SESSION_KEY);
+      const [user, setUser]               = useState(saved ? JSON.parse(saved).username : null);
+      const [activeTab, setActiveTab]     = useState("portal");
+      const [refreshTrigger, setRefresh]  = useState(0);
+
+      if (!user) return <Login onLogin={setUser} />;
+
+      return (
+        <div className="portal">
+          <header className="topbar">
+            <div className="topbar-brand">
+              <span className="topbar-title">🌊 @ilovepauldomar</span>
+              <span className="topbar-tag">Creative Portal</span>
+            </div>
+            <div className="topbar-spacer" />
+            <div className="topbar-actions">
+              <button className={`tab-btn ${activeTab==='portal'?'active':''}`} onClick={()=>setActiveTab('portal')}>
+                🎬 Portal
+              </button>
+              <button className={`tab-btn ${activeTab==='social'?'active':''}`} onClick={()=>setActiveTab('social')}>
+                📱 Redes Sociais
+              </button>
+              <button className={`tab-btn ${activeTab==='dam'?'active':''}`} onClick={()=>setActiveTab('dam')}>
+                🗂️ DAM
+              </button>
+              <span style={{ color: 'var(--border)', fontSize: 12 }}>|</span>
+              <span style={{ fontSize: 12, color: 'var(--subtle)' }}>👤 {user}</span>
+              <button className="logout-btn" onClick={() => {
+                sessionStorage.removeItem(SESSION_KEY);
+                setUser(null);
+              }}>Sair</button>
+            </div>
+          </header>
+
+          <div className="portal-body">
+            {activeTab === 'portal' && (
+              <>
+                <Chat onIdeaSaved={() => setRefresh(r => r + 1)} />
+                <div className="library-panel">
+                  <Library refreshTrigger={refreshTrigger} />
+                </div>
+              </>
+            )}
+            {activeTab === 'social' && <SocialPanel />}
+            {activeTab === 'dam'    && <DAMPanel />}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

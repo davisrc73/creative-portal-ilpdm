@@ -1,0 +1,63 @@
+version: '3.8'
+
+# ─────────────────────────────────────────────────────────────
+# ILPDM Digital Asset Management — Synology DS220+
+# Migrado de Mac local para NAS
+# Remover container "web" — frontend integrado no Creative Portal
+# ─────────────────────────────────────────────────────────────
+
+services:
+
+  # ── BASE DE DADOS ──────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: ilpdm_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: davis.correia
+      POSTGRES_PASSWORD: Isa11Vale26
+      POSTGRES_DB: ilpdm_dam
+    volumes:
+      # Dados persistentes na pasta docker do Synology
+      - /volume1/docker/ilpdm-dam/postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5455:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ilpdm_dam -U davis.correia"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ilpdm_network
+
+  # ── API BACKEND ────────────────────────────────────────────
+  api:
+    env_file:
+    - ./backend/.env
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ilpdm_api
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://davis.correia:Isa11Vale26@db:5432/ilpdm_dam
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      NAS_MOUNT_PATH: /nas_assets
+      CORS_ORIGINS: https://creative.ilovepauldomar.pt,https://dam-api.ilovepauldomar.pt
+    volumes:
+      - /volume1/ILPDM/ASSETS:/nas_assets:rw
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - ilpdm_network
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+  # NOTA: container "web" removido
+  # O frontend está integrado no Creative Portal (portal.html)
+
+networks:
+  ilpdm_network:
+    driver: bridge

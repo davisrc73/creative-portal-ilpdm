@@ -1,0 +1,7 @@
+# Ignorar dados da base de dados
+postgres_data/
+
+# Ignorar ficheiros de ambiente com passwords
+.env
+__pycache__/
+*.pyc

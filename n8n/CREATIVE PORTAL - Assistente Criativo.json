@@ -1,0 +1,295 @@
+{
+  "name": "CREATIVE PORTAL - Assistente Criativo",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "assistente-criativo",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://creative.ilovepauldomar.pt"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        -176
+      ],
+      "id": "7670f0ba-ba17-4c1f-8c1b-c7ceddb4f053",
+      "name": "Webhook",
+      "webhookId": "552dce01-2233-41aa-977a-9847dd6a0231"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.mensagem }}",
+        "options": {
+          "systemMessage": "És o Diretor de Arte Sénior do projeto @ilovepauldomar.\n\nIDENTIDADE DO PROJETO:\nO @ilovepauldomar é um projeto dedicado à promoção da freguesia \ndo Paul do Mar, na ilha da Madeira. O objetivo central é cuidar \nda essência, resiliência e cultura desta comunidade piscatória e \nagrícola, servindo como ponte emocional para a vasta diáspora de \nemigrantes paulenses pelo mundo.\n\nTOM E VOZ:\n- Empático e nostálgico\n- Focado no \"aconchego de casa\" para sanar saudades\n- Celebra a resiliência e cultura local\n- Nunca genérico — sempre enraizado na identidade do Paul do Mar\n\nCANAIS DE COMUNICAÇÃO:\n- Instagram (Reels 9:16, Feed 1:1, Stories)\n- Site (artigos, banners, landing pages)\n- Digital Signage (16:9, loops de 15-30 segundos)\n- Merchandising (t-shirts, postais, canecas)\n\nCOMPETÊNCIAS:\n- Ideação de conteúdos para qualquer canal\n- Guiões para Motion Graphics e vídeo\n- Conceitos para merchandising físico\n- Copywriting nostálgico e cultural\n- Especificações técnicas para produção multimedia\n- Sugestões de paletas de cores e tipografia\n\nCOMPORTAMENTO:\n- Responde sempre em português europeu\n- Faz perguntas de clarificação se o pedido for vago\n- Quando gerares uma ideia completa, usa SEMPRE a ferramenta \n  Google Sheets para a guardar automaticamente\n- Após guardar, confirma ao utilizador que a ideia foi arquivada\n\nFORMATO JSON PARA O GOOGLE SHEETS:\nQuando guardares uma ideia, estrutura os dados assim:\n{\n  \"tema\": \"título criativo da ideia\",\n  \"conceito\": \"descrição do conceito criativo\",\n  \"visual\": \"especificações técnicas visuais e de produção\",\n  \"cores\": \"#HEX1, #HEX2, #HEX3\",\n  \"texto/narração\": \"guião ou copy da peça\",\n  \"canal\": \"Instagram | Site | Signage | Merchandising\",\n  \"status\": \"Nova\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -80,
+        -176
+      ],
+      "id": "f6cd821e-1095-4793-8e67-e3f410ef4ffb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        288,
+        -176
+      ],
+      "id": "2383faf1-0d77-41fe-aa1b-3bf16eaa147b",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-sonnet-4.6",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        64
+      ],
+      "id": "bea66dfd-04d9-4003-acc3-226a24597fbf",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "pdoWPPUaFeH0Xy8u",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1rRais5pEVbEExQbU85qcsMAGRnT9OeSiWQMUhsKrFTI",
+          "mode": "list",
+          "cachedResultName": "n8n_dados_ideias",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rRais5pEVbEExQbU85qcsMAGRnT9OeSiWQMUhsKrFTI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Folha1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rRais5pEVbEExQbU85qcsMAGRnT9OeSiWQMUhsKrFTI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "Nova",
+            "tema": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('tema', ``, 'string') }}",
+            "conceito": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conceito', ``, 'string') }}",
+            "visual": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('visual', ``, 'string') }}",
+            "cores": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('cores', ``, 'string') }}",
+            "texto/narração": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('texto_narra__o', ``, 'string') }}",
+            "canal": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('canal', ``, 'string') }}",
+            "toolCallId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('toolCallId', ``, 'string') }}",
+            "data": "=={{ \"'\" + new Date().toISOString().split('T')[0] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "data",
+              "displayName": "data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "tema",
+              "displayName": "tema",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conceito",
+              "displayName": "conceito",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "visual",
+              "displayName": "visual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cores",
+              "displayName": "cores",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "texto/narração",
+              "displayName": "texto/narração",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "canal",
+              "displayName": "canal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "toolCallId",
+              "displayName": "toolCallId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        160,
+        64
+      ],
+      "id": "6b9972fd-3209-426e-9bb1-3a7cb1410c75",
+      "name": "Append row in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1Gbxz4qvfzdaAUpN",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body?.sessionId ?? $json.sessionId ?? 'default-session' }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        16,
+        64
+      ],
+      "id": "6a1bbc69-424b-4920-b71c-33c4d1010964",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "56d3d865-348f-475b-94b9-e62085f3dc1f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e1f6aca7c5cc7e3111f11e9ac335a005d81cb7d5d3620f26fcfacb10e5be6694"
+  },
+  "id": "y7I0AFoIKmwCw7AX",
+  "tags": []
+}
