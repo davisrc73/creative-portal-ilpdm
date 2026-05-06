@@ -1634,10 +1634,37 @@
     const WEBHOOK_CHAT    = "https://n8n.ilovepauldomar.pt/webhook/assistente-criativo";
     const WEBHOOK_LIBRARY = "https://n8n.ilovepauldomar.pt/webhook/e4b9ad59-e50a-474f-baa5-a3124e15a058";
 
+    // ── UTILIZADORES E PERMISSÕES ────────────────────────────────
     const USERS = [
-      { username: "admin",  password: "pauldomar2024" },
-      { username: "equipa", password: "criativo2024"  },
+      {
+        username: "davis.correia",
+        password: "paul1973",
+        nome: "Davis Correia",
+        perfil: "admin",
+        abas: ["portal", "social", "dam", "utilizadores"],
+      },
+      {
+        username: "michelle.freitas",
+        password: "paul1978",
+        nome: "Michelle de Freitas",
+        perfil: "social",
+        abas: ["social"],
+      },
     ];
+
+    const PERFIL_LABELS = {
+      admin:    { label: "Admin",        cor: "#d4a843", icon: "⚡" },
+      criativo: { label: "Criativo",     cor: "#3fb950", icon: "🎨" },
+      media:    { label: "Media",        cor: "#2d8fa8", icon: "🗂️" },
+      social:   { label: "Social Media", cor: "#e1306c", icon: "📱" },
+    };
+
+    const ABA_LABELS = {
+      portal:       { icon: "🎬", label: "Portal" },
+      social:       { icon: "📱", label: "Redes Sociais" },
+      dam:          { icon: "🗂️", label: "DAM" },
+      utilizadores: { icon: "👥", label: "Utilizadores" },
+    };
 
     const SESSION_KEY = "cp_ilovepauldomar_auth";
 
@@ -1694,8 +1721,9 @@
         e.preventDefault();
         const found = USERS.find(u => u.username === user.trim() && u.password === pass);
         if (found) {
-          sessionStorage.setItem(SESSION_KEY, JSON.stringify({ username: found.username }));
-          onLogin(found.username);
+          const session = { username: found.username, nome: found.nome, perfil: found.perfil, abas: found.abas };
+          sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+          onLogin(session);
         } else {
           setError("Credenciais inválidas. Tenta novamente.");
         }
@@ -1726,6 +1754,95 @@
               <button className="login-btn" type="submit">Entrar no Portal</button>
               {error && <div className="login-error">{error}</div>}
             </form>
+          </div>
+        </div>
+      );
+    }
+
+    // ── PAINEL DE UTILIZADORES (admin only) ───────────────────────
+    function UtilizadoresPanel() {
+      const perfilInfo = (p) => PERFIL_LABELS[p] || { label: p, cor: 'var(--muted)', icon: '👤' };
+
+      return (
+        <div style={{ flex: 1, overflow: 'hidden auto', padding: '32px', scrollbarWidth: 'thin', scrollbarColor: 'var(--border) transparent' }}>
+          <div style={{ maxWidth: 720, margin: '0 auto' }}>
+            <div style={{ marginBottom: 28 }}>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, color: 'var(--bright)', marginBottom: 6 }}>
+                👥 Gestão de Utilizadores
+              </h2>
+              <p style={{ fontSize: 13, color: 'var(--subtle)' }}>
+                Para adicionar ou alterar utilizadores, edita a constante <code style={{ background: 'var(--surface)', padding: '1px 6px', borderRadius: 4, fontSize: 11 }}>USERS</code> no código do portal.
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {USERS.map((u, i) => {
+                const pi = perfilInfo(u.perfil);
+                return (
+                  <div key={i} style={{
+                    background: 'var(--deep)', border: '1px solid var(--border)',
+                    borderRadius: 14, padding: '20px 24px',
+                    display: 'flex', alignItems: 'center', gap: 20
+                  }}>
+                    {/* AVATAR */}
+                    <div style={{
+                      width: 48, height: 48, borderRadius: '50%',
+                      background: `${pi.cor}22`, border: `2px solid ${pi.cor}44`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 20, flexShrink: 0
+                    }}>
+                      {pi.icon}
+                    </div>
+
+                    {/* INFO */}
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--bright)', marginBottom: 3 }}>
+                        {u.nome}
+                      </div>
+                      <div style={{ fontSize: 12, color: 'var(--subtle)', fontFamily: 'monospace' }}>
+                        @{u.username}
+                      </div>
+                    </div>
+
+                    {/* PERFIL */}
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{
+                        fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 12,
+                        background: `${pi.cor}18`, color: pi.cor,
+                        border: `1px solid ${pi.cor}30`, display: 'inline-block', marginBottom: 8
+                      }}>
+                        {pi.icon} {pi.label}
+                      </span>
+                      <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                        {u.abas.map(a => {
+                          const al = ABA_LABELS[a] || { icon: '•', label: a };
+                          return (
+                            <span key={a} style={{
+                              fontSize: 10, padding: '2px 8px', borderRadius: 8,
+                              background: 'var(--surface)', color: 'var(--subtle)',
+                              border: '1px solid var(--border)'
+                            }}>
+                              {al.icon} {al.label}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* NOTA */}
+            <div style={{
+              marginTop: 28, padding: '16px 20px',
+              background: 'rgba(212,168,67,0.06)', border: '1px solid rgba(212,168,67,0.15)',
+              borderRadius: 12, fontSize: 12, color: 'var(--subtle)', lineHeight: 1.7
+            }}>
+              <strong style={{ color: 'var(--gold)' }}>ℹ️ Como adicionar utilizadores:</strong><br/>
+              Edita o ficheiro <code style={{ background: 'var(--surface)', padding: '1px 5px', borderRadius: 3 }}>portal.html</code> e adiciona uma nova entrada no array <code style={{ background: 'var(--surface)', padding: '1px 5px', borderRadius: 3 }}>USERS</code>.<br/>
+              Perfis disponíveis: <strong>admin</strong> (tudo), <strong>criativo</strong> (Portal + Redes Sociais), <strong>media</strong> (DAM + Portal), <strong>social</strong> (Redes Sociais).
+            </div>
           </div>
         </div>
       );
@@ -2614,13 +2731,12 @@ status: Nova`;
 
     function getThumbUrl(asset) {
       if (asset.thumbnail_path) {
-        // Remove o prefixo /nas_assets/ e constrói o URL correcto
-        const relativePath = asset.thumbnail_path.replace("/nas_assets/", "");
-        return `${DAM_API}/media/${relativePath}`;
+        const name = asset.thumbnail_path.split("/").pop();
+        return `${DAM_API}/media/${name}`;
       }
       if (asset.asset_type === "image") {
-        const relativePath = asset.file_path.replace("/nas_assets/", "");
-        return `${DAM_API}/media/${encodeURIComponent(relativePath).replace(/%2F/g, "/")}`;
+        const name = asset.file_path.split("/").pop();
+        return `${DAM_API}/media/${name}`;
       }
       return null;
     }
@@ -2638,9 +2754,6 @@ status: Nova`;
       const [scanResult, setScanResult] = useState(null);
       const [analysing, setAnalysing] = useState(false);
       const [copied, setCopied]       = useState(null);
-      const [scanModalOpen, setScanModalOpen] = useState(false);
-      const [scanPaths, setScanPaths]         = useState(["/nas_assets"]);
-      const [newPath, setNewPath]             = useState("");
 
       const load = useCallback(async () => {
         setLoading(true); setError(null);
@@ -2666,27 +2779,17 @@ status: Nova`;
         return s && t && sent;
       }), [assets, search, typeFilter, sentimentFilter]);
 
-        async function handleScan() {
-          setScanning(true); setScanResult(null); setScanModalOpen(false);
-          const allResults = { total_files_found: 0, new_assets_indexed: 0, existing_assets_skipped: 0, errors: [] };
-          try {
-            for (const path of scanPaths) {
-              const url = path === "/nas_assets"
-                ? `${DAM_API}/indexing/scan`
-                : `${DAM_API}/indexing/scan?directory=${encodeURIComponent(path)}`;
-              const res = await fetch(url, { method: 'POST' });
-              if (!res.ok) throw new Error(`Erro ${res.status} no path ${path}`);
-              const data = await res.json();
-              allResults.total_files_found    += data.total_files_found || 0;
-              allResults.new_assets_indexed   += data.new_assets_indexed || 0;
-              allResults.existing_assets_skipped += data.existing_assets_skipped || 0;
-              allResults.errors = [...allResults.errors, ...(data.errors || [])];
-            }
-            setScanResult(allResults);
-            await load();
-          } catch(e) { setError(e.message); }
-          finally { setScanning(false); }
-        }
+      async function handleScan() {
+        setScanning(true); setScanResult(null);
+        try {
+          const res = await fetch(`${DAM_API}/indexing/scan`, { method: 'POST' });
+          if (!res.ok) throw new Error(`Erro ${res.status}`);
+          const data = await res.json();
+          setScanResult(data);
+          await load();
+        } catch(e) { setError(e.message); }
+        finally { setScanning(false); }
+      }
 
       async function handleAnalyse(asset) {
         setAnalysing(true);
@@ -2714,30 +2817,30 @@ status: Nova`;
       return (
         <div className="dam-panel">
           {/* TOOLBAR */}
-            <div className="dam-toolbar">
-              <div className="search-wrap" style={{ maxWidth: 280 }}>
-                <span className="search-icon">🔍</span>
-                <input className="search-input" placeholder="Pesquisar assets, tags, descrições..."
-                  value={search} onChange={e => setSearch(e.target.value)} />
-              </div>
-              <div className="filter-pills">
-                {[["all","Todos"],["image","Imagens"],["video","Vídeos"]].map(([v,l]) => (
-                  <button key={v} className={`pill ${typeFilter===v?'active':''}`} onClick={() => setTypeFilter(v)}>{l}</button>
-                ))}
-              </div>
-              <select className="filter-select" style={{ fontSize: 12, padding: '5px 10px' }}
-                value={sentimentFilter} onChange={e => setSentimentFilter(e.target.value)}>
-                <option value="all">Todos os sentimentos</option>
-                {Object.entries(SENTIMENT_MAP).map(([k,v]) => (
-                  <option key={k} value={k}>{v.icon} {v.label}</option>
-                ))}
-              </select>
-              <span className="count-tag">{filtered.length} asset{filtered.length!==1?'s':''}</span>
-              <button className="refresh-btn" onClick={load}>↺</button>
-              <button className="dam-scan-btn" onClick={() => setScanModalOpen(true)} disabled={scanning}>
-                {scanning ? <><div className="spinner" style={{width:14,height:14,borderWidth:2,margin:0}}/> A indexar...</> : '📂 Scan NAS'}
-              </button>
+          <div className="dam-toolbar">
+            <div className="search-wrap" style={{ maxWidth: 280 }}>
+              <span className="search-icon">🔍</span>
+              <input className="search-input" placeholder="Pesquisar assets, tags, descrições..."
+                value={search} onChange={e => setSearch(e.target.value)} />
             </div>
+            <div className="filter-pills">
+              {[["all","Todos"],["image","Imagens"],["video","Vídeos"]].map(([v,l]) => (
+                <button key={v} className={`pill ${typeFilter===v?'active':''}`} onClick={() => setTypeFilter(v)}>{l}</button>
+              ))}
+            </div>
+            <select className="filter-select" style={{ fontSize: 12, padding: '5px 10px' }}
+              value={sentimentFilter} onChange={e => setSentimentFilter(e.target.value)}>
+              <option value="all">Todos os sentimentos</option>
+              {Object.entries(SENTIMENT_MAP).map(([k,v]) => (
+                <option key={k} value={k}>{v.icon} {v.label}</option>
+              ))}
+            </select>
+            <span className="count-tag">{filtered.length} asset{filtered.length!==1?'s':''}</span>
+            <button className="refresh-btn" onClick={load}>↺</button>
+            <button className="dam-scan-btn" onClick={handleScan} disabled={scanning}>
+              {scanning ? <><div className="spinner" style={{width:14,height:14,borderWidth:2,margin:0}}/> A indexar...</> : '📂 Scan NAS'}
+            </button>
+          </div>
 
           {/* SCAN RESULT */}
           {scanResult && (
@@ -2918,86 +3021,6 @@ status: Nova`;
               </div>
             </div>
           )}
-              
-            {/* SCAN MODAL */}
-            {scanModalOpen && (
-              <div className="overlay" onClick={() => setScanModalOpen(false)}>
-                <div className="modal" style={{ maxWidth: 480 }} onClick={e => e.stopPropagation()}>
-                  <div className="modal-content">
-                    <div className="modal-head">
-                      <h2 className="modal-title" style={{ fontSize: 18 }}>📂 Configurar Scan NAS</h2>
-                      <button className="modal-close" onClick={() => setScanModalOpen(false)}>✕</button>
-                    </div>
-
-                    <div className="modal-section">
-                      <div className="modal-label">Caminhos a indexar</div>
-                      <p style={{ fontSize: 12, color: 'var(--subtle)', marginBottom: 12 }}>
-                        O scan é recursivo — entra automaticamente em todas as subpastas.
-                      </p>
-                      {scanPaths.map((p, i) => (
-                        <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
-                          <div style={{
-                            flex: 1, padding: '8px 12px', background: 'var(--surface)',
-                            border: '1px solid var(--border)', borderRadius: 8,
-                            fontSize: 12, fontFamily: 'monospace', color: 'var(--body)'
-                          }}>
-                            {p}
-                          </div>
-                          {scanPaths.length > 1 && (
-                            <button onClick={() => setScanPaths(prev => prev.filter((_,j) => j !== i))}
-                              style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 16 }}>
-                              ✕
-                            </button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="modal-section">
-                      <div className="modal-label">Adicionar caminho</div>
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        <input
-                          style={{
-                            flex: 1, padding: '8px 12px', background: 'var(--surface)',
-                            border: '1px solid var(--border)', borderRadius: 8,
-                            color: 'var(--bright)', fontFamily: 'monospace', fontSize: 12, outline: 'none'
-                          }}
-                          placeholder="/nas_assets/fotos"
-                          value={newPath}
-                          onChange={e => setNewPath(e.target.value)}
-                          onKeyDown={e => {
-                            if (e.key === 'Enter' && newPath.trim()) {
-                              setScanPaths(prev => [...prev, newPath.trim()]);
-                              setNewPath("");
-                            }
-                          }}
-                        />
-                        <button className="dam-scan-btn" style={{ whiteSpace: 'nowrap' }}
-                          onClick={() => {
-                            if (newPath.trim()) {
-                              setScanPaths(prev => [...prev, newPath.trim()]);
-                              setNewPath("");
-                            }
-                          }}>
-                          + Adicionar
-                        </button>
-                      </div>
-                      <p style={{ fontSize: 11, color: 'var(--muted)', marginTop: 6 }}>
-                        Prima Enter ou clica em Adicionar. Os caminhos são relativos ao container Docker.
-                      </p>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 8 }}>
-                      <button className="refresh-btn" onClick={() => setScanModalOpen(false)}>Cancelar</button>
-                      <button className="dam-scan-btn" onClick={handleScan} disabled={scanning}>
-                        🚀 Iniciar Scan
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}              
-              
         </div>
       );
     }
@@ -3005,11 +3028,21 @@ status: Nova`;
     // ── APP ───────────────────────────────────────────────────────
     function App() {
       const saved = sessionStorage.getItem(SESSION_KEY);
-      const [user, setUser]               = useState(saved ? JSON.parse(saved).username : null);
-      const [activeTab, setActiveTab]     = useState("portal");
+      const [session, setSession]         = useState(saved ? JSON.parse(saved) : null);
+      const [activeTab, setActiveTab]     = useState(null);
       const [refreshTrigger, setRefresh]  = useState(0);
 
-      if (!user) return <Login onLogin={setUser} />;
+      // Define aba inicial quando faz login
+      useEffect(() => {
+        if (session && !activeTab) {
+          setActiveTab(session.abas[0] || "portal");
+        }
+      }, [session]);
+
+      if (!session) return <Login onLogin={(s) => { setSession(s); setActiveTab(s.abas[0]); }} />;
+
+      const perfilInfo = PERFIL_LABELS[session.perfil] || { label: session.perfil, cor: 'var(--muted)', icon: '👤' };
+      const temAcesso  = (aba) => session.abas.includes(aba);
 
       return (
         <div className="portal">
@@ -3020,26 +3053,47 @@ status: Nova`;
             </div>
             <div className="topbar-spacer" />
             <div className="topbar-actions">
-              <button className={`tab-btn ${activeTab==='portal'?'active':''}`} onClick={()=>setActiveTab('portal')}>
-                🎬 Portal
-              </button>
-              <button className={`tab-btn ${activeTab==='social'?'active':''}`} onClick={()=>setActiveTab('social')}>
-                📱 Redes Sociais
-              </button>
-              <button className={`tab-btn ${activeTab==='dam'?'active':''}`} onClick={()=>setActiveTab('dam')}>
-                🗂️ DAM
-              </button>
+              {temAcesso('portal') && (
+                <button className={`tab-btn ${activeTab==='portal'?'active':''}`} onClick={()=>setActiveTab('portal')}>
+                  🎬 Portal
+                </button>
+              )}
+              {temAcesso('social') && (
+                <button className={`tab-btn ${activeTab==='social'?'active':''}`} onClick={()=>setActiveTab('social')}>
+                  📱 Redes Sociais
+                </button>
+              )}
+              {temAcesso('dam') && (
+                <button className={`tab-btn ${activeTab==='dam'?'active':''}`} onClick={()=>setActiveTab('dam')}>
+                  🗂️ DAM
+                </button>
+              )}
+              {temAcesso('utilizadores') && (
+                <button className={`tab-btn ${activeTab==='utilizadores'?'active':''}`} onClick={()=>setActiveTab('utilizadores')}>
+                  👥 Utilizadores
+                </button>
+              )}
               <span style={{ color: 'var(--border)', fontSize: 12 }}>|</span>
-              <span style={{ fontSize: 12, color: 'var(--subtle)' }}>👤 {user}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{
+                  fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 10,
+                  background: `${perfilInfo.cor}18`, color: perfilInfo.cor,
+                  border: `1px solid ${perfilInfo.cor}30`
+                }}>
+                  {perfilInfo.icon} {perfilInfo.label}
+                </span>
+                <span style={{ fontSize: 12, color: 'var(--subtle)' }}>{session.nome}</span>
+              </div>
               <button className="logout-btn" onClick={() => {
                 sessionStorage.removeItem(SESSION_KEY);
-                setUser(null);
+                setSession(null);
+                setActiveTab(null);
               }}>Sair</button>
             </div>
           </header>
 
           <div className="portal-body">
-            {activeTab === 'portal' && (
+            {activeTab === 'portal' && temAcesso('portal') && (
               <>
                 <Chat onIdeaSaved={() => setRefresh(r => r + 1)} />
                 <div className="library-panel">
@@ -3047,8 +3101,9 @@ status: Nova`;
                 </div>
               </>
             )}
-            {activeTab === 'social' && <SocialPanel />}
-            {activeTab === 'dam'    && <DAMPanel />}
+            {activeTab === 'social'       && temAcesso('social')       && <SocialPanel />}
+            {activeTab === 'dam'          && temAcesso('dam')          && <DAMPanel />}
+            {activeTab === 'utilizadores' && temAcesso('utilizadores') && <UtilizadoresPanel />}
           </div>
         </div>
       );

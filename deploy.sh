@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# 1. Entrar na pasta do projeto no NAS
-cd /volume1/docker/creative-portal-ilpd
+# 1. Entrar na pasta do repositório no NAS
+cd /volume1/docker/creative-portal-ilpdm
 
-# 2. Puxar a versão mais recente do GitHub
-git pull origin main
+# 2. Sincronizar o Frontend com a pasta do Web Station
+# Isto garante que o que editaste no Trae vai para o site real
+cp ./frontend/index.html /volume1/web/staging/creative-portal/index.html
 
-# 3. Reconstruir e reiniciar os contentores
-# O --build garante que as mudanças no backend/ são aplicadas
+# 3. Reconstruir os containers do Backend (API e DB)
 docker-compose up -d --build
 
-# 4. Limpar imagens antigas para poupar espaço no NAS
+# 4. Limpar recursos antigos
 docker image prune -f
 
-echo "Deploy concluído com sucesso no @ilovepauldomar Creative Portal!"
+echo "✅ Deploy concluído: Frontend e Backend actualizados!"
