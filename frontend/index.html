@@ -32,12 +32,33 @@
       --accent:    #d4a843;
     }
 
+    [data-theme="light"] {
+      --night:     #ffffff;
+      --deep:      #f6f8fa;
+      --surface:   #ffffff;
+      --border:    #d0d7de;
+      --muted:     #57606a;
+      --subtle:    #6e7781;
+      --body:      #24292f;
+      --bright:    #1f2328;
+      --gold:      #9a6b1f;
+      --gold-dim:  #7d5518;
+      --coral:     #a0341f;
+      --ocean:     #0969da;
+      --foam:      #1f6feb;
+      --green:     #1a7f37;
+      --orange:    #9a6700;
+      --purple:    #8250df;
+      --accent:    #9a6b1f;
+    }
+
     html, body { height: 100%; overflow: hidden; }
 
     body {
       font-family: 'Outfit', sans-serif;
       background: var(--night);
       color: var(--body);
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     /* ── GRAIN OVERLAY ── */
@@ -48,6 +69,10 @@
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
       pointer-events: none;
       z-index: 9999;
+    }
+    
+    [data-theme="light"] body::after {
+      opacity: 0.5;
     }
 
     /* ══════════════════════════════════════
@@ -1711,6 +1736,35 @@
       return d.toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', year: 'numeric' });
     }
 
+    // ── AUTO THEME HOOK ───────────────────────────────────────────
+    function useAutoTheme() {
+      const [theme, setTheme] = useState(() => {
+        const hour = new Date().getHours();
+        return (hour >= 6 && hour < 18) ? 'light' : 'dark';
+      });
+
+      useEffect(() => {
+        const updateTheme = () => {
+          const hour = new Date().getHours();
+          const newTheme = (hour >= 6 && hour < 18) ? 'light' : 'dark';
+          setTheme(newTheme);
+          document.body.setAttribute('data-theme', newTheme);
+        };
+
+        updateTheme();
+
+        const checkInterval = setInterval(updateTheme, 60000);
+
+        return () => clearInterval(checkInterval);
+      }, []);
+
+      useEffect(() => {
+        document.body.setAttribute('data-theme', theme);
+      }, [theme]);
+
+      return theme;
+    }
+
     // ── LOGIN ─────────────────────────────────────────────────────
     function Login({ onLogin }) {
       const [user, setUser]   = useState("");
@@ -3027,6 +3081,8 @@ status: Nova`;
 
     // ── APP ───────────────────────────────────────────────────────
     function App() {
+      useAutoTheme();
+      
       const saved = sessionStorage.getItem(SESSION_KEY);
       const [session, setSession]         = useState(saved ? JSON.parse(saved) : null);
       const [activeTab, setActiveTab]     = useState(null);
